@@ -37,16 +37,15 @@ foreach ($html->find('tr[class=item]') as $ts) {
     echo '{';
     $numItems = count($ts);
     $autos++;
-    foreach ($ts->find('div') as $photol) {
-        foreach ($photol->find('figure[class=search-result-item-photo] img') as $photo) {
-            $photo_url = $photo->getAttribute('src');
-          //  $new_url = str_replace("-thumbnail.jpg", "-medium.jpg", $photo_url);
-            echo '"icon":"' . $photo_url . '", ';
-        }
-    }
+
     foreach ($ts->find('a[class=deeplink]') as $a) {
         $d_url= 'https://www.autowereld.nl'.$a->href;
         echo '"details":"' . $d_url . '", ';
+        foreach ($a->find('img') as $photo) {
+            $photo_url = $photo->getAttribute('src');
+           $photo_url = str_replace("100/", "320/", $photo_url);
+            echo '"icon":"https://www.autowereld.nl' . $photo_url . '", ';
+        }
     }
     foreach ($ts->find('td[class=omschrijving]') as $tf) {
         foreach ($tf->find('h3') as $title) {
@@ -62,9 +61,17 @@ foreach ($html->find('tr[class=item]') as $ts) {
             echo '"merk":"' . $merk_naam . '", ';
         }
 
-        foreach ($tf->find('span') as $span) {
+        foreach ($tf->find('span[class=kenmerken]') as $span) {
             $count++;
-            if ($count == 1) {
+
+            $dataArray = explode(',', $span->plaintext);
+            echo '"versnel":"' . $dataArray[1] . '", ';
+
+            echo '"brandstof":"' . $dataArray[0] . '", ';
+            echo '"inrichting":"' . $dataArray[2] . '", ';
+            echo '"kleur":"' . $dataArray[3] . '", ';
+
+          /*  if ($count == 1) {
                 $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
                 echo '"versnel":"' . $td . '", ';
             } elseif ($count == 2) {
@@ -79,22 +86,23 @@ foreach ($html->find('tr[class=item]') as $ts) {
             } elseif ($count == 5) {
                 $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
                 echo '"kleur":"' . $td . '", ';
-            }
+            }*/
         }
     }
 
-    foreach ($ts->find('td') as $rinfo) {
-        foreach ($rinfo->find('div[class=search-result-item-price]') as $prijs) {
-            $prijs = preg_replace('/[^0-9\.]/', '', $prijs);
+    foreach ($ts->find('td[class=prijs]') as $prijs) {
+
+            $prijs = preg_replace('/[^0-9\.]/', '', $prijs->plaintext);
             echo '"price":"' . $prijs . '", ';
         }
-    }
 
-    //$bouwjaar = preg_replace('/[ ]{1,}/', '', $ts->find('td', 3)->plaintext);
+        foreach ($ts->find('td[class=bouwjaar]') as $bouwjaar) {
 
-  //  echo '"jaar":' . $bouwjaar . ' ';
+    $bouwjaar = preg_replace('/[ ]{1,}/', '', $bouwjaar->plaintext);
 
+   echo '"jaar":' . $bouwjaar . ' ';
 
+}
 
     $count = 0;
 
