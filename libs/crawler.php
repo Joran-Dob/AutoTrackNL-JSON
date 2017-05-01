@@ -6,17 +6,7 @@ ini_set('display_errors', true);
 
 
 //base url
-$base = $URL;
-
-$curl = curl_init();
-curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($curl, CURLOPT_HEADER, false);
-curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-curl_setopt($curl, CURLOPT_URL, $base);
-curl_setopt($curl, CURLOPT_REFERER, $base);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-$str = curl_exec($curl);
-curl_close($curl);
+include("get_config.php");
 
 // Create a DOM object
 $html = new simple_html_dom();
@@ -89,7 +79,11 @@ foreach ($html->find('tr[class=item]') as $ts) {
             }*/
         }
     }
+    foreach ($ts->find('td[class=kilometerstand]') as $kilometer) {
+      $kilometer = preg_replace('/[^0-9\.]/', '', $kilometer->plaintext);
+      echo '"kilometer":"' . $kilometer . '", ';
 
+}
     foreach ($ts->find('td[class=prijs]') as $prijs) {
 
             $prijs = preg_replace('/[^0-9\.]/', '', $prijs->plaintext);
