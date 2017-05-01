@@ -100,7 +100,7 @@ foreach ($html->find('tr[class=item]') as $ts) {
 
     $bouwjaar = preg_replace('/[ ]{1,}/', '', $bouwjaar->plaintext);
 
-   echo '"jaar":' . $bouwjaar . ' ';
+   echo '"jaar":"' . $bouwjaar . ' "';
 
 }
 

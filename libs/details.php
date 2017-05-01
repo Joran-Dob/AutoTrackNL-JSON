@@ -1,6 +1,7 @@
 <?php
 header('Content-type:application/json;charset=utf-8');
 $d_url = $_GET["url"];
+$d_url = str_replace("/details.html", "/foto.html", $d_url);
 
 $curl2 = curl_init();
 curl_setopt($curl2, CURLOPT_SSL_VERIFYPEER, false);
@@ -17,14 +18,14 @@ $html_details = new simple_html_dom();
 // Load HTML from a string
 $html_details->load($d_c);
 echo "[";
-foreach ($html_details->find('div[class=royalSlider rsDefault]') as $p_div) {
+foreach ($html_details->find('div[class=fotogroot clearfix]') as $p_div) {
     $photo_n = 0;
-    $last = count($p_div->find('a'));
+    $last = count($p_div->find('img'));
 
-    foreach ($p_div->find('a') as $photo_a) {
+    foreach ($p_div->find('img') as $photo_a) {
         echo '{';
         $photo_n = $photo_n+1;
-        echo '"photo":"' . $photo_a->href . '"';
+        echo '"photo":"https://www.autowereld.nl' . $photo_a->src . '"';
 
         if ($photo_n==$last) {
             echo '}';
