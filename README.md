@@ -1,4 +1,4 @@
-# AutotraderNL-JSON
+# AutoTrackNL-JSON
 This is a PHP script that converts the Dutch AutoTrack search pages to JSON.
 
 <img src="https://media.giphy.com/media/POT64D1FUlyNy/giphy.gif"/>
