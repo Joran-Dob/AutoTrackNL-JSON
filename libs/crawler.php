@@ -1,8 +1,8 @@
 <?php
 header('Content-type:application/json;charset=utf-8');
-//ini_set( 'error_reporting', E_ALL );
-//ini_set( 'display_errors', true );
-ob_start(); // Start output buffering
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', true);
+//ob_start(); // Start output buffering
 
 
 //base url
@@ -28,29 +28,32 @@ $merk_naam = "";
 // foreach($html->find('img') as $element) echo $element->src . '<br />';
 
 echo "[";
-$arrayt = $html->find('tr[class=normalRowResult search-result-item] ');
+$arrayt = $html->find('tr[class=item]');
 $last = count($arrayt);
 
 
-foreach ($html->find('tr[class=normalRowResult search-result-item] ') as $ts) {
+
+foreach ($html->find('tr[class=item]') as $ts) {
     echo '{';
     $numItems = count($ts);
     $autos++;
-    foreach ($ts->find('td') as $photol) {
-        foreach ($photol->find('div[class=search-result-item-photo] img') as $photo) {
+    foreach ($ts->find('div') as $photol) {
+        foreach ($photol->find('figure[class=search-result-item-photo] img') as $photo) {
             $photo_url = $photo->getAttribute('src');
-            $new_url = str_replace("-thumbnail.jpg", "-medium.jpg", $photo_url);
-            echo '"icon":"' . $new_url . '", ';
+          //  $new_url = str_replace("-thumbnail.jpg", "-medium.jpg", $photo_url);
+            echo '"icon":"' . $photo_url . '", ';
         }
     }
-
-    foreach ($ts->find('td') as $tf) {
-        foreach ($tf->find('a') as $title) {
+    foreach ($ts->find('a[class=deeplink]') as $a) {
+        $d_url= 'https://www.autowereld.nl'.$a->href;
+        echo '"details":"' . $d_url . '", ';
+    }
+    foreach ($ts->find('td[class=omschrijving]') as $tf) {
+        foreach ($tf->find('h3') as $title) {
             echo '"title":"' . $title->plaintext . '", ';
 
 
-            $d_url= 'https://api.autotrader.nl/'.$title->href;
-            echo '"details":"' . $d_url . '", ';
+
 
 
 
@@ -59,27 +62,23 @@ foreach ($html->find('tr[class=normalRowResult search-result-item] ') as $ts) {
             echo '"merk":"' . $merk_naam . '", ';
         }
 
-        foreach ($tf->find('ul') as $tr) {
-            foreach ($tr->find('li') as $tf) {
-                $count++;
-                foreach ($tf->find('span[style=white-space:nowrap;]') as $td) {
-                    if ($count == 1) {
-                        $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
-                        echo '"versnel":"' . $td . '", ';
-                    } elseif ($count == 2) {
-                        $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
-                        echo '"brandstof":"' . $td . '", ';
-                    } elseif ($count == 3) {
-                        $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
-                        echo '"inrichting":"' . $td . '", ';
-                    } elseif ($count == 4) {
-                        $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
-                        echo '"kilometer":"' . $td . '", ';
-                    } elseif ($count == 5) {
-                        $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
-                        echo '"kleur":"' . $td . '", ';
-                    }
-                }
+        foreach ($tf->find('span') as $span) {
+            $count++;
+            if ($count == 1) {
+                $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
+                echo '"versnel":"' . $td . '", ';
+            } elseif ($count == 2) {
+                $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
+                echo '"brandstof":"' . $td . '", ';
+            } elseif ($count == 3) {
+                $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
+                echo '"inrichting":"' . $td . '", ';
+            } elseif ($count == 4) {
+                $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
+                echo '"kilometer":"' . $td . '", ';
+            } elseif ($count == 5) {
+                $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
+                echo '"kleur":"' . $td . '", ';
             }
         }
     }
@@ -91,9 +90,9 @@ foreach ($html->find('tr[class=normalRowResult search-result-item] ') as $ts) {
         }
     }
 
-    $bouwjaar = preg_replace('/[ ]{1,}/', '', $ts->find('td', 3)->plaintext);
+    //$bouwjaar = preg_replace('/[ ]{1,}/', '', $ts->find('td', 3)->plaintext);
 
-    echo '"jaar":' . $bouwjaar . ' ';
+  //  echo '"jaar":' . $bouwjaar . ' ';
 
 
 
@@ -109,9 +108,8 @@ foreach ($html->find('tr[class=normalRowResult search-result-item] ') as $ts) {
 echo "]";
 
 
-$list = ob_get_contents(); // Store buffer in variable
+//$list = ob_get_contents(); // Store buffer in variable
 
-ob_end_clean(); // End buffering and clean up
+//ob_end_clean(); // End buffering and clean up
 
-echo $list; // will contain the contents
-?>
+//echo $list; // will contain the contents
