@@ -6,9 +6,9 @@ This is a PHP script that converts the Dutch AutoTrack search pages to JSON.
 ## Setup
 
 1. Clone this git
-2. Enter your dutch AutoTrack URL in the config.php file 
+2. Enter your dutch AutoTrack URL in the config.php file
 3. Upload the files to your web server
 
-## Usage 
+## Usage
 
 #### You can extend the functionalities, for more info about the simple HTML dom library visit: http://simplehtmldom.sourceforge.net/
