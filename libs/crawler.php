@@ -2,7 +2,7 @@
 header('Content-type:application/json;charset=utf-8');
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', true);
-//ob_start(); // Start output buffering
+ob_start(); // Start output buffering
 
 
 //base url
@@ -33,7 +33,7 @@ foreach ($html->find('tr[class=item]') as $ts) {
         echo '"details":"' . $d_url . '", ';
         foreach ($a->find('img') as $photo) {
             $photo_url = $photo->getAttribute('src');
-           $photo_url = str_replace("100/", "320/", $photo_url);
+            $photo_url = str_replace("100/", "320/", $photo_url);
             echo '"icon":"https://www.autowereld.nl' . $photo_url . '", ';
         }
     }
@@ -60,43 +60,22 @@ foreach ($html->find('tr[class=item]') as $ts) {
             echo '"brandstof":"' . $dataArray[0] . '", ';
             echo '"inrichting":"' . $dataArray[2] . '", ';
             echo '"kleur":"' . $dataArray[3] . '", ';
-
-          /*  if ($count == 1) {
-                $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
-                echo '"versnel":"' . $td . '", ';
-            } elseif ($count == 2) {
-                $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
-                echo '"brandstof":"' . $td . '", ';
-            } elseif ($count == 3) {
-                $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
-                echo '"inrichting":"' . $td . '", ';
-            } elseif ($count == 4) {
-                $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
-                echo '"kilometer":"' . $td . '", ';
-            } elseif ($count == 5) {
-                $td = preg_replace('/[ ]{2,}/', '', $td->plaintext);
-                echo '"kleur":"' . $td . '", ';
-            }*/
         }
     }
     foreach ($ts->find('td[class=kilometerstand]') as $kilometer) {
-      $kilometer = preg_replace('/[^0-9\.]/', '', $kilometer->plaintext);
-      echo '"kilometer":"' . $kilometer . '", ';
-
-}
+        $kilometer = preg_replace('/[^0-9\.]/', '', $kilometer->plaintext);
+        echo '"kilometer":"' . $kilometer . '", ';
+    }
     foreach ($ts->find('td[class=prijs]') as $prijs) {
+        $prijs = preg_replace('/[^0-9\.]/', '', $prijs->plaintext);
+        echo '"price":"' . $prijs . '", ';
+    }
 
-            $prijs = preg_replace('/[^0-9\.]/', '', $prijs->plaintext);
-            echo '"price":"' . $prijs . '", ';
-        }
+    foreach ($ts->find('td[class=bouwjaar]') as $bouwjaar) {
+        $bouwjaar = preg_replace('/[ ]{1,}/', '', $bouwjaar->plaintext);
 
-        foreach ($ts->find('td[class=bouwjaar]') as $bouwjaar) {
-
-    $bouwjaar = preg_replace('/[ ]{1,}/', '', $bouwjaar->plaintext);
-
-   echo '"jaar":"' . $bouwjaar . ' "';
-
-}
+        echo '"jaar":"' . $bouwjaar . ' "';
+    }
 
     $count = 0;
 
@@ -110,8 +89,8 @@ foreach ($html->find('tr[class=item]') as $ts) {
 echo "]";
 
 
-//$list = ob_get_contents(); // Store buffer in variable
+$list = ob_get_contents(); // Store buffer in variable
 
-//ob_end_clean(); // End buffering and clean up
+ob_end_clean(); // End buffering and clean up
 
-//echo $list; // will contain the contents
+echo $list; // will contain the contents

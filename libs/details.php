@@ -1,38 +1,49 @@
 <?php
 header('Content-type:application/json;charset=utf-8');
 $d_url = $_GET["url"];
-$d_url = str_replace("/details.html", "/foto.html", $d_url);
 
-$curl2 = curl_init();
-curl_setopt($curl2, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($curl2, CURLOPT_HEADER, false);
-curl_setopt($curl2, CURLOPT_FOLLOWLOCATION, true);
-curl_setopt($curl2, CURLOPT_URL, $d_url);
-curl_setopt($curl2, CURLOPT_REFERER, $d_url);
-curl_setopt($curl2, CURLOPT_RETURNTRANSFER, true);
-$d_c = curl_exec($curl2);
-curl_close($curl2);
+$curl3 = curl_init();
+curl_setopt($curl3, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($curl3, CURLOPT_HEADER, false);
+curl_setopt($curl3, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($curl3, CURLOPT_URL, $d_url);
+curl_setopt($curl3, CURLOPT_REFERER, $d_url);
+curl_setopt($curl3, CURLOPT_RETURNTRANSFER, true);
+$d_c_d = curl_exec($curl3);
+curl_close($curl3);
 
 // Create a DOM object
-$html_details = new simple_html_dom();
+$html_details_d = new simple_html_dom();
 // Load HTML from a string
-$html_details->load($d_c);
+$html_details_d->load($d_c_d);
+
+
 echo "[";
-foreach ($html_details->find('div[class=fotogroot clearfix]') as $p_div) {
-    $photo_n = 0;
-    $last = count($p_div->find('img'));
-
-    foreach ($p_div->find('img') as $photo_a) {
-        echo '{';
-        $photo_n = $photo_n+1;
-        echo '"photo":"https://www.autowereld.nl' . $photo_a->src . '"';
-
-        if ($photo_n==$last) {
-            echo '}';
-        } else {
-            echo '},';
-        }
-    }
+foreach ($html_details_d->find('div[class=grid-5 alpha]') as $info_div1) {
+  foreach ($info_div1->find('li') as $li) {
+    echo '{';
+    echo '"opties":"' . $li->plaintext . '"';
+    echo '},';
+  }
 }
+foreach ($html_details_d->find('div[class=grid-5 alpha omega]') as $info_div2) {
+  $li_n = 0;
+
+
+  $last = count($info_div2->find('li'));
+  foreach ($info_div2->find('li') as $li) {
+    $li_n = $li_n+1;
+
+    echo '{';
+    echo '"opties":"' . $li->plaintext . '"';
+    if ($li_n==$last) {
+        echo '}';
+    } else {
+        echo '},';
+    }
+  }
+}
+
+
   echo "]";
 ?>
